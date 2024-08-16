@@ -7,8 +7,7 @@ Certainly! Below is a GitHub README file that includes instructions for installi
 
 This project utilizes AI to analyze a blood test report, provide health recommendations, and find relevant WebMD articles. The system is powered by multiple AI agents working together using the Ollama `openhermes` model and Serper search tool.
 
-[Here's video of the output]
-(https://youtu.be/4o3mmO95HTo)
+[Here's video of the output](https://youtu.be/4o3mmO95HTo)
 
 ## Prerequisites
 
