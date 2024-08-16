@@ -14,7 +14,7 @@ def extract_text_from_pdf(pdf_path):
     return text
 
 # Path to the blood test report (adjusted for your environment)
-pdf_path = 'final/sample_report.pdf'
+pdf_path = 'Blood_Analyzer/sample_report.pdf'
 
 # Extracted text from the PDF
 blood_test_text = extract_text_from_pdf(pdf_path)
@@ -70,9 +70,9 @@ task2 = Task(
 )
 
 task3 = Task(
-    description='Find four relevant WebMD articles based on the health recommendations provided.',
+    description='Find relevant WebMD articles based on the health recommendations provided.',
     agent=webmd_finder,
-    expected_output="List of four relevant WebMD articles"
+    expected_output="List of relevant WebMD articles"
 )
 
 # Define the Crew
