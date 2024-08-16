@@ -3,7 +3,6 @@ import PyPDF2  # For reading PDFs
 from langchain_community.llms import Ollama
 from crewai import Agent, Task, Crew, Process
 from crewai_tools import SerperDevTool
-from tabulate import tabulate  # For table formatting
 
 # Function to read and extract text from the PDF
 def extract_text_from_pdf(pdf_path):
@@ -22,7 +21,9 @@ blood_test_text = extract_text_from_pdf(pdf_path)
 
 # Define LLM (Ollama)
 ollama_openhermes = Ollama(model="openhermes")
-os.environ['SERPER_API_KEY'] = "5fc477693c562ed17221137ed4dacfa7133fa189"
+
+# INSERT YOUR SERPER API KEY
+os.environ['SERPER_API_KEY'] = "YOUR_API_KEY"
 # Initialize Serper search tool
 serper_search_tool = SerperDevTool()
 
@@ -90,30 +91,17 @@ summary = result.task_results[0].output
 recommendations = result.task_results[1].output
 webmd_articles = result.task_results[2].output
 
-# Limit the WebMD articles to 4
-def limit_articles(webmd_articles):
-    limited_articles = []
-    counter = 0
-    for article in webmd_articles.split('\n'):
-        if article.strip():
-            limited_articles.append(article.strip())
-            counter += 1
-        if counter == 4:
-            break
-    return limited_articles
-
-# Function to format output in table format
+# Function to format output
 def format_output(summary, recommendations, webmd_articles):
-    summary_table = [["Parameter", "Value"]] + [line.split(':') for line in summary.split('\n') if line.strip()]
-    recommendations_table = [["Health Recommendations"]] + [[rec.strip()] for rec in recommendations.split('\n') if rec.strip()]
-    articles_table = [["Relevant WebMD Articles"]] + [[article.strip()] for article in limit_articles(webmd_articles)]
-
     print("====================================")
-    print(tabulate(summary_table, headers="firstrow", tablefmt="grid"))
+    print("Blood Test Summary:")
+    print(summary)
     print("\n====================================")
-    print(tabulate(recommendations_table, headers="firstrow", tablefmt="grid"))
+    print("Health Recommendations:")
+    print(recommendations)
     print("\n====================================")
-    print(tabulate(articles_table, headers="firstrow", tablefmt="grid"))
+    print("Relevant WebMD Articles:")
+    print(webmd_articles)
     print("\n====================================")
 
 # Format and print the output
