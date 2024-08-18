@@ -1,0 +1,5 @@
+streamlit
+langchain_openai
+python-dotenv
+crewai
+pypdf

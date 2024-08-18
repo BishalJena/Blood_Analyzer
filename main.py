@@ -1,108 +1,139 @@
-import os
-import PyPDF2  # For reading PDFs
-from langchain_community.llms import Ollama
-from crewai import Agent, Task, Crew, Process
-from crewai_tools import SerperDevTool
+import logging
+from dotenv import load_dotenv
+import streamlit as st
+from crewai import Crew, Process
+from pypdf import PdfReader
+from agents import initialize_agents
+from tasks import initialize_tasks
 
-# Function to read and extract text from the PDF
-def extract_text_from_pdf(pdf_path):
-    with open(pdf_path, 'rb') as file:
-        reader = PyPDF2.PdfReader(file)
-        text = ''
-        for page in range(len(reader.pages)):
-            text += reader.pages[page].extract_text()
-    return text
+# Load environment variables
+load_dotenv()
 
-# Path to the blood test report (adjusted for your environment)
-pdf_path = 'Blood_Analyzer/sample_report.pdf'
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
-# Extracted text from the PDF
-blood_test_text = extract_text_from_pdf(pdf_path)
+# def extract_text_from_pdf(uploaded_file):
+#     text = ""
+#     try:
+#         reader = PdfReader(uploaded_file)
+#         for page in reader.pages:
+#             text += page.extract_text()
+#     except Exception as e:
+#         st.error(f"Error reading the PDF file: {e}")
+#         logger.error(f"Error reading the PDF file: {e}")
+#         return None
+#     return text
 
-# Define LLM (Ollama)
-ollama_openhermes = Ollama(model="openhermes")
+# def display_results(results):
+#     if not isinstance(results, list) or len(results) != 3:
+#         st.error("Unexpected results format. Please check the analysis output.")
+#         return
 
-# INSERT YOUR SERPER API KEY
-os.environ['SERPER_API_KEY'] = "YOUR_API_KEY"
-# Initialize Serper search tool
-serper_search_tool = SerperDevTool()
+#     analysis, articles, recommendations = results
 
-# Define Agents
-researcher = Agent(
-    role='Researcher',
-    goal='Analyze the blood test report and give the data with values of all blood parameters in an organized table format.',
-    backstory='You are an AI medical assistant specializing in analyzing blood test reports and presenting the data with detailed levels/data of each parameter.',
-    verbose=True,
-    allow_delegation=False,
-    llm=ollama_openhermes
-)
+#     st.subheader("Blood Test Analysis")
+#     st.markdown(analysis)
 
-health_advisor = Agent(
-    role='Health Advisor',
-    goal='Provide health recommendations based on the blood test report summary, formatted in an organized table for easy readability.',
-    backstory='You are an AI health advisor specializing in giving personalized health recommendations based on detailed analysis of blood reports.',
-    verbose=True,
-    allow_delegation=False,
-    llm=ollama_openhermes
-)
+#     st.subheader("Relevant Articles")
+#     st.markdown(articles)
 
-webmd_finder = Agent(
-    role='WebMD Finder',
-    goal='Find four relevant WebMD articles based on the health recommendations provided.',
-    backstory='You are an AI assistant specializing in finding accurate and relevant WebMD articles based on health advice provided.',
-    verbose=True,
-    allow_delegation=False,
-    llm=ollama_openhermes,
-    tools=[serper_search_tool]  # Add the Serper search tool
-)
+#     st.subheader("Health Recommendations")
+#     st.markdown(recommendations)
 
-# Define Tasks
-task1 = Task(
-    description=f'Analyze the following blood test report and provide a detailed summary with values of all blood parameters: {blood_test_text}',
-    agent=researcher,
-    expected_output="Summary of the blood test report with detailed values"
-)
+def main():
+    st.title("Medical Report Analysis ➕")
 
-task2 = Task(
-    description='Based on the blood test summary, provide health recommendations to improve health status.',
-    agent=health_advisor,
-    expected_output="Health recommendations based on the blood test summary"
-)
+    uploaded_file = st.file_uploader("Choose a PDF file", type="pdf")
 
-task3 = Task(
-    description='Find relevant WebMD articles based on the health recommendations provided.',
-    agent=webmd_finder,
-    expected_output="List of relevant WebMD articles"
-)
+    if uploaded_file is not None:
+        # Extract text from PDF
+        text = ""
+        try:
+            reader = PdfReader(uploaded_file)
+            for page in reader.pages:
+                text += page.extract_text()
+        except Exception as e:
+            st.error(f"Error reading the PDF file: {e}")
+            logger.error(f"Error reading the PDF file: {e}")
+            return
 
-# Define the Crew
-crew = Crew(
-    agents=[researcher, health_advisor, webmd_finder],
-    tasks=[task1, task2, task3],
-    verbose=True,  # Set verbose to True for detailed output
-    process=Process.sequential
-)
+        if st.button("Analyze Report"):
+            st.write("Analyzing the report... This may take a few minutes.")
+            logger.info("Report analysis started")
 
-# Run the Crew
-result = crew.kickoff()
+            # Initialize agents and tasks
+            researcher, health_advisor, webmd_finder = initialize_agents()
+            tasks = initialize_tasks(researcher, health_advisor, webmd_finder, blood_test_text=text)
 
-# Extract results from the output
-summary = result.task_results[0].output
-recommendations = result.task_results[1].output
-webmd_articles = result.task_results[2].output
+            # Form the crew and define the process
+            crew = Crew(
+                agents=[researcher, health_advisor, webmd_finder],
+                tasks=tasks,
+                process=Process.sequential
+            )
 
-# Function to format output
-def format_output(summary, recommendations, webmd_articles):
-    print("====================================")
-    print("Blood Test Summary:")
-    print(summary)
-    print("\n====================================")
-    print("Health Recommendations:")
-    print(recommendations)
-    print("\n====================================")
-    print("Relevant WebMD Articles:")
-    print(webmd_articles)
-    print("\n====================================")
+            # Kick off the crew process with the extracted text
+            with st.spinner("Processing..."):
+                try:
+                    result = crew.kickoff(inputs={"text": text})
+                    logger.info("Report analysis completed successfully")
+                except Exception as e:
+                    st.error(f"An error occurred during analysis: {e}")
+                    logger.error(f"An error occurred during analysis: {e}")
+                    return
 
-# Format and print the output
-format_output(summary, recommendations, webmd_articles)
+            # Display results using Markdown for word wrapping and clickable links
+            st.subheader("Analysis Results")
+            st.markdown(result)
+    else:
+        st.write("Please upload a PDF file to begin analysis.")
+
+
+if __name__ == "__main__":
+    main()
+
+
+# def main():
+#     st.title("Medical Report Analysis ➕")
+
+#     uploaded_file = st.file_uploader("Choose a PDF file", type="pdf")
+
+#     if uploaded_file is not None:
+#         # Extract text from PDF
+#         blood_test_text = extract_text_from_pdf(uploaded_file)
+#         if blood_test_text is None:
+#             return
+
+#         if st.button("Analyze Report"):
+#             st.write("Analyzing the report... This may take a few minutes.")
+#             logger.info("Report analysis started")
+
+#             try:
+#                 # Initialize agents and tasks
+#                 researcher, health_advisor, webmd_finder = initialize_agents()
+#                 tasks = initialize_tasks(researcher, health_advisor, webmd_finder, blood_test_text)
+
+#                 # Create a Crew with the agents and tasks
+#                 crew = Crew(
+#                     agents=[researcher, health_advisor, webmd_finder],
+#                     tasks=tasks
+#                 )
+
+#                 # Execute the tasks
+#                 results = crew.kickoff()
+
+#                 logger.info("Report analysis completed successfully")
+
+#                 # Display results
+#                 display_results(results)
+
+#             except Exception as e:
+#                 st.error(f"An error occurred during analysis: {str(e)}")
+#                 logger.error(f"Error during analysis: {str(e)}", exc_info=True)
+
+#     else:
+#         st.write("Please upload a PDF file to begin analysis.")
+
+# if __name__ == "__main__":
+#     main()

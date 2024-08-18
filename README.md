@@ -1,79 +1,50 @@
-# Blood_Analyzer
-Certainly! Below is a GitHub README file that includes instructions for installing prerequisites, setting up the `openhermes` model on Ollama, and running the `main.py` script.
+# Medical Report Analysis
 
----
+This project analyzes blood test reports using AI agents to provide health recommendations and relevant articles.
 
-# Blood Test Report Analyzer and Health Advisor
+## Setup
 
-This project utilizes AI to analyze a blood test report, provide health recommendations, and find relevant WebMD articles. The system is powered by multiple AI agents working together using the Ollama `openhermes` model and Serper search tool.
-
-Here's video of the output:
-(YouTube Link)[https://youtu.be/4o3mmO95HTo]
-
-## Prerequisites
-
-### 1. Install Required Python Libraries
-
-Ensure that you have Python 3.8 or higher installed. Install the required libraries by running the following command:
-
-```bash
-pip install PyPDF2 langchain_community crewai crewai_tools
-```
-
-### 2. Set Up Ollama and the `openhermes` Model
-
-You need to set up Ollama and ensure that the `openhermes` model is available:
-
-1. **Install Ollama**:
-   - Follow the installation instructions from the [Ollama website](https://ollama.com/download) to set up Ollama on your machine.
-
-2. **Download the `openhermes` Model**:
-   - Once Ollama is installed, download the `openhermes` model by running the following command in your terminal:
-
-   ```bash
-   ollama run openhermes
+1. Clone the repository:
+   ```
+   git clone https://github.com/your-username/medical-report-analysis.git
+   cd medical-report-analysis
    ```
 
-### 3. Get a Serper API Key
+2. Install the required packages:
+   ```
+   pip install -r requirements.txt
+   ```
 
-To use the Serper search tool, you need an API key:
+3. Create a `.env` file in the root directory and add your API keys:
+   ```
+   SERPER_API_KEY=your_serper_api_key
+   OPENAI_API_KEY=your_openai_api_key
+   OPENAI_MODEL_NAME=gpt-3.5-turbo
+   OPENAI_API_BASE=https://api.openai.com/v1
+   ```
 
-1. Sign up for Serper API at [serper.dev](https://serper.dev/).
-2. After obtaining your API key, insert it into the environment variable in the script:
+## Running the Application
 
-```python
-os.environ['SERPER_API_KEY'] = "YOUR_API_KEY"
+To run the application, use the following command:
+
+```
+streamlit run main.py
 ```
 
-Replace `"YOUR_API_KEY"` with your actual API key.
+This will start the Streamlit server and open the application in your default web browser. Upload a PDF blood test report and click "Analyze Report" to get the analysis results.
 
-## Usage
+## Project Structure
 
-### 1. Set Up Your Blood Test Report
+- `main.py`: The main Streamlit application.
+- `agents.py`: Defines the AI agents used in the analysis.
+- `tasks.py`: Defines the tasks performed by the agents.
+- `utils.py`: Utility functions for the application.
+- `.env`: Contains environment variables (API keys).
+- `requirements.txt`: Lists the Python packages required for the project.
 
-Ensure you have your blood test report in PDF format. Update the path to your PDF in the script:
+## How It Works
 
-```python
-pdf_path = 'Blood_Analyzer/sample_report.pdf'
-```
-
-Change `'Blood_Analyzer/sample_report.pdf'` to the path where your PDF is stored.
-
-### 2. Run the Script
-
-After setting up everything, run the script using the following command:
-
-```bash
-python main.py
-```
-or
-```bash
-python3 main.py
-```
-### 3. View the Output
-
-The script will output:
-
-- A summary of the blood test report with detailed values.
-- Health recommendations based on the report.
-- A list of relevant WebMD articles.
+1. The user uploads a PDF blood test report.
+2. The application extracts text from the PDF.
+3. AI agents analyze the report, search for relevant articles, and provide health recommendations.
+4. The results are displayed in a formatted manner within the Streamlit interface.
