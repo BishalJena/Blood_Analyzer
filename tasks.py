@@ -38,7 +38,7 @@ def initialize_tasks(researcher, health_advisor, webmd_finder , blood_test_text)
         followed by all levels from the entire report in table format followed by a bullet list of actionable health recommendations, with each bullet point containing
         links to its source // FOLLOW GIVEN FORMAT !!! //
         ## Summary
-        [Provide a simple short summary of the blood report here with blood parameter levels like haemoglobin, wbc count etc, **If needed only do this step:-(Example:-Use data from blood report like (total platlets level[use from the orignal blood report ]))**]
+        [Provide a complete summary of the report here with parameter levels like haemoglobin, wbc count etc, **If needed only do this step:-(Example:-Use data from report like (total platlets level[use from the orignal blood report ]))**]
         ## Levels
         | Parameter | Level | Normal Range |
         ## Recommendations

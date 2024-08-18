@@ -7,12 +7,11 @@ This project analyzes blood test reports using AI agents to provide health recom
 1. Clone the repository:
    ```bash
    git clone https://github.com/BishalJena/Blood_Analyzer.git
-   cd medical-report-analysis
    ```
 2. Setup virtual environment
    ```bash
-   python -m venv venv
-   source -m venv/bin/activate
+   python3 -m venv venv
+   source ./venv/bin/activate
    ```
 2. Install the required packages:
    ```bash

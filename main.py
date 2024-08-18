@@ -42,7 +42,7 @@ logger = logging.getLogger(__name__)
 #     st.markdown(recommendations)
 
 def main():
-    st.title("Medical Report Analysis ➕")
+    st.title("Medical Analysis ➕")
 
     uploaded_file = st.file_uploader("Choose a PDF file", type="pdf")
 
