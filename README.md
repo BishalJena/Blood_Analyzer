@@ -5,31 +5,37 @@ This project analyzes blood test reports using AI agents to provide health recom
 ## Setup
 
 1. Clone the repository:
-   ```
-   git clone https://github.com/your-username/medical-report-analysis.git
+   ```bash
+   git clone https://github.com/BishalJena/Blood_Analyzer.git
    cd medical-report-analysis
    ```
+2. Setup virtual environment
+   ```bash
 
-2. Install the required packages:
    ```
+2. Install the required packages:
+   ```bash
    pip install -r requirements.txt
    ```
 
 3. Create a `.env` file in the root directory and add your API keys:
+
+   ```bash
+      touch .env
+   ```
+
+   Add your keys in .env file:
    ```
    SERPER_API_KEY=your_serper_api_key
    OPENAI_API_KEY=your_openai_api_key
-   OPENAI_MODEL_NAME=gpt-3.5-turbo
+   OPENAI_MODEL_NAME=gpt-4o-mini
    OPENAI_API_BASE=https://api.openai.com/v1
    ```
+4. To run the application, use the following command:
 
-## Running the Application
-
-To run the application, use the following command:
-
-```
-streamlit run main.py
-```
+   ```bash
+   streamlit run main.py
+   ```
 
 This will start the Streamlit server and open the application in your default web browser. Upload a PDF blood test report and click "Analyze Report" to get the analysis results.
 
