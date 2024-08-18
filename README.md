@@ -2,7 +2,7 @@
 
 This project analyzes blood test reports using AI agents to provide health recommendations and relevant articles.
 
-(Youtube Link to Project Demo)[https://youtu.be/KO89wdIiKJs]
+[Youtube Link to Project Demo](https://youtu.be/KO89wdIiKJs)
 
 ## Setup
 
