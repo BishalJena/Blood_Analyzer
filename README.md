@@ -11,7 +11,8 @@ This project analyzes blood test reports using AI agents to provide health recom
    ```
 2. Setup virtual environment
    ```bash
-
+   python -m venv venv
+   source -m venv/bin/activate
    ```
 2. Install the required packages:
    ```bash
