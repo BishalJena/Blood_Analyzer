@@ -14,7 +14,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 def main():
-    st.title("Medical Report Analysis ➕")
+    st.title("Blood Report Analyzer 🏥")
 
     uploaded_file = st.file_uploader("Choose a PDF file", type="pdf")
 
