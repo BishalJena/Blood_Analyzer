@@ -1,4 +1,4 @@
-# Medical Report Analysis
+# Blood Analyzer
 
 This project analyzes blood test reports using AI agents to provide health recommendations and relevant articles.
 
